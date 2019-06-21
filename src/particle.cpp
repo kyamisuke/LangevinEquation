@@ -255,8 +255,8 @@ void particle::setInitialCondition(float px, float py, float vx, float vy){
 void particle::update(float temperture, float viscocity, float timeInterval){
 	
 	if (bFixed == false){
-        pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture*viscocity);
-        pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture*viscocity);
+        pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture/viscocity);
+        pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture/viscocity);
 	}
 }
 //------------------------------------------------------------

@@ -9,7 +9,7 @@ void ofApp::setup(){
     // parameter
     gui.setup();
     gui.setPosition(10, 10);
-    gui.add(temperture.set("temperture", 1.0, 0.0, 3.0));
+    gui.add(temperture.set("temperture", 1.0, 0.0, 5.0));
     gui.add(viscocity.set("viscocity", 1.0, 1.0, 3.0));
     gui.add(timeInterval.set("timeInterval", 0.1, 0.0, 0.1));
     
@@ -144,48 +144,44 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if (key == ' ') { // press space bar -> reset
-        for (int i=0; i < particles.size(); i++) {
-            for (int j=0; j < particles.size(); j++) {
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<6; j++) {
-                        particles[i*6+j].pos = ofVec2f(100+104*j, 30+120*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<6; j++) {
-                        particles[12+i*6+j].pos = ofVec2f(100+104*j, 210+120*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<6; j++) {
-                        particles[24+i*6+j].pos = ofVec2f(100+104*j, 390+120*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<6; j++) {
-                        particles[36+i*6+j].pos = ofVec2f(100+104*j, 570+120*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<7; j++) {
-                        particles[48+i*7+j].pos = ofVec2f(48+104*j, 60+60*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<7; j++) {
-                        particles[62+i*7+j].pos = ofVec2f(48+104*j, 240+60*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<7; j++) {
-                        particles[76+i*7+j].pos = ofVec2f(48+104*j, 420+60*i);
-                    }
-                }
-                for (int i=0; i<2; i++) {
-                    for (int j=0; j<7; j++) {
-                        particles[90+i*7+j].pos = ofVec2f(48+104*j, 600+60*i);
-                    }
-                }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<6; j++) {
+                particles[i*6+j].pos = ofVec2f(100+104*j, 30+120*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<6; j++) {
+                particles[12+i*6+j].pos = ofVec2f(100+104*j, 210+120*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<6; j++) {
+                particles[24+i*6+j].pos = ofVec2f(100+104*j, 390+120*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<6; j++) {
+                particles[36+i*6+j].pos = ofVec2f(100+104*j, 570+120*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<7; j++) {
+                particles[48+i*7+j].pos = ofVec2f(48+104*j, 60+60*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<7; j++) {
+                particles[62+i*7+j].pos = ofVec2f(48+104*j, 240+60*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<7; j++) {
+                particles[76+i*7+j].pos = ofVec2f(48+104*j, 420+60*i);
+            }
+        }
+        for (int i=0; i<2; i++) {
+            for (int j=0; j<7; j++) {
+                particles[90+i*7+j].pos = ofVec2f(48+104*j, 600+60*i);
             }
         }
     }
