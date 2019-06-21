@@ -9,16 +9,13 @@ void ofApp::setup(){
     // parameter
     gui.setup();
     gui.setPosition(10, 10);
-    gui.add(temperture.set("temperture", 5.0, 0.0, 10.0));
+    gui.add(temperture.set("temperture", 1.0, 0.0, 3.0));
     gui.add(viscocity.set("viscocity", 1.0, 1.0, 3.0));
     gui.add(timeInterval.set("timeInterval", 0.1, 0.0, 0.1));
     
     int particleNum = 104;
     for (int i=0; i < particleNum; i++) {
         particle p = particle();
-        for (int j=0; j < 3; j++) {
-            p.segmentPos[j] = 999;
-        }
         particles.push_back(p);
     }
     
@@ -102,7 +99,8 @@ void ofApp::draw(){
             dir_ji.normalize();
             float dist = ofDist(pos_i.x, pos_i.y, pos_j.x, pos_j.y);
             
-            if (particles[i].segmentPos[0] == j || particles[i].segmentPos[1] == j || particles[i].segmentPos[2] == j) {
+            if (particles[i].segmentPos[0] == j || particles[i].segmentPos[1] == j
+                || particles[i].segmentPos[2] == j) {
                 if (dist >= 1 && dist <= 60) {
                     dir_ji *= abs(60 - dist);
                     particles[i].addForce(dir_ji.x, dir_ji.y);

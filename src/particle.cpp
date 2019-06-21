@@ -9,6 +9,9 @@ particle::particle(){
 	damping = 0.07f;
 	bFixed = false;
     segmentNum = 0;
+    for (int j=0; j < 3; j++) {
+        segmentPos[j] = 999;
+    }
 }
 
 //------------------------------------------------------------
@@ -252,7 +255,8 @@ void particle::setInitialCondition(float px, float py, float vx, float vy){
 void particle::update(float temperture, float viscocity, float timeInterval){
 	
 	if (bFixed == false){
-        pos = pos + frc*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., 1.);
+        pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture*viscocity);
+        pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture*viscocity);
 	}
 }
 //------------------------------------------------------------
