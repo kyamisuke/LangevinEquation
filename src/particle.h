@@ -24,8 +24,8 @@ class particle
 		void addAttractionForce(particle &p, float radius, float scale);
 		void addClockwiseForce(particle &p, float radius, float scale);
 		void addCounterClockwiseForce(particle &p, float radius, float scale);
-    void updateSegmentNum();
-    void resetSegmentNum();
+    void updateJointNum();
+    void resetJointNum();
 	
 		
 		void addDampingForce();
@@ -41,10 +41,10 @@ class particle
 	
 		float damping;
     
-    int segmentNum;
+    int jointNum;
     
-    int segmentPos[3];
-    vector <float> segmentDis;
+    int jointPos[3];
+    vector <float> jointDis;
 
     protected:
     private:

@@ -8,9 +8,9 @@ particle::particle(){
 	setInitialCondition(0,0,0,0);
 	damping = 0.07f;
 	bFixed = false;
-    segmentNum = 0;
+    jointNum = 0;
     for (int j=0; j < 3; j++) {
-        segmentPos[j] = 999;
+        jointPos[j] = 999;
     }
 }
 
@@ -27,12 +27,12 @@ void particle::addForce(float x, float y){
     frc.y = frc.y + y*.1;
 }
 //------------------------------------------------------------
-void particle::updateSegmentNum() {
-    if (segmentNum < 3) { segmentNum++; }
+void particle::updateJointNum() {
+    if (jointNum < 3) { jointNum++; }
 }
 //------------------------------------------------------------
-void particle::resetSegmentNum() {
-    segmentNum = 0;
+void particle::resetJointNum() {
+    jointNum = 0;
 }
 //------------------------------------------------------------
 void particle::addRepulsionForce(float x, float y, float radius, float scale){
@@ -255,8 +255,12 @@ void particle::setInitialCondition(float px, float py, float vx, float vy){
 void particle::update(float temperture, float viscocity, float timeInterval){
 	
 	if (bFixed == false){
-        pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture/viscocity);
-        pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., temperture/viscocity);
+        pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., 1.);
+        if (pos.x > ofGetWidth()) { pos.x = 0; }
+        else if (pos.x < 0) { pos.x = ofGetWidth(); }
+        pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., 1.);
+        if (pos.y > ofGetHeight()) { pos.y = 0; }
+        else if (pos.y < 0) { pos.y = ofGetHeight(); }
 	}
 }
 //------------------------------------------------------------
