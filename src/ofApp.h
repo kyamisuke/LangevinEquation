@@ -22,6 +22,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+    
+    ofVec2f getGravity(vector <particle> particles);
+    float getAverage(vector <float> num);
+    float getDispersion(vector <float> num);
 		
     vector <particle> particles;
     

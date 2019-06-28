@@ -1,5 +1,33 @@
 #include "ofApp.h"
 
+ofVec2f ofApp::getGravity(vector <particle> particles) {
+    ofVec2f sum = ofVec2f(0, 0);
+    for (particle& p : particles) {
+        sum += p.pos;
+    }
+    
+    return sum / particles.size();
+}
+//--------------------------------------------------------------
+float ofApp::getAverage(vector <float> num) {
+    float sum = 0.;
+    for (float& n : num) {
+        sum += n;
+    }
+    
+    return sum / num.size();
+}
+//--------------------------------------------------------------
+float ofApp::getDispersion(vector <float> num){
+    float avg = getAverage(num);
+    float sum = 0.;
+    for (float& n : num) {
+        sum += pow(avg - n, 2);
+    }
+    
+    return sum / num.size();
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(239);
@@ -11,7 +39,7 @@ void ofApp::setup(){
     gui.setPosition(10, 10);
     gui.add(temperture.set("temperture", 10.0, 0.0, 40.0));
     gui.add(viscocity.set("viscocity", 1.0, 1.0, 5.0));
-    gui.add(timeInterval.set("timeInterval", 0.1, 0.0, 0.1));
+    gui.add(timeInterval.set("timeInterval", 0, 0.0, 0.1));
     
     int particleNum = 204;
     for (int i=0; i < particleNum; i++) {
@@ -51,7 +79,7 @@ void ofApp::draw(){
             int j_num = particles[j].jointNum;
             if (i_num == 3 || j_num == 3) { continue; }
             
-            if (dist >= 1 && dist <= 40) {
+            if (dist >= 1 && dist <= 35) {
                 ofSetColor(39);
                 ofDrawLine(pos_i, pos_j);
                 particles[i].updateJointNum();
@@ -77,7 +105,7 @@ void ofApp::draw(){
                     dir_ji *= abs(60 - dist);
                     particles[i].addForce(dir_ji.x, dir_ji.y);
                     particles[j].addForce(-dir_ji.x, -dir_ji.y);
-                }else if (dist > 30 && dist <= 40) {
+                }else if (dist > 30 && dist <= 35) {
                     dir_ji *= abs(60 - dist);
                     particles[i].addForce(-dir_ji.x, -dir_ji.y);
                     particles[j].addForce(dir_ji.x, dir_ji.y);
@@ -106,11 +134,23 @@ void ofApp::draw(){
         }
     }
     
+    // check dispersion
+    ofVec2f gravityPoint = getGravity(particles);
+    vector <float> dists;
+    float dispersion;
+    for (auto& p : particles) {
+        float dist = ofDist(p.pos.x, p.pos.y, gravityPoint.x, gravityPoint.y);
+        dists.push_back(dist);
+    }
+    dispersion = getDispersion(dists);
+    
     gui.draw();
     
     // debug: display now frame per second
     ofSetColor(39);
     ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 10, 100);
+    ofDrawBitmapString("gravity point: (" + ofToString(gravityPoint.x) + ", " + ofToString(gravityPoint.y) + ")", 10, 110);
+    ofDrawBitmapString("dispersion: " + ofToString(dispersion), 10, 120);
 }
 
 //--------------------------------------------------------------
