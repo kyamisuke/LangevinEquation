@@ -28,6 +28,9 @@ class ofApp : public ofBaseApp{
     float getDispersion(vector <float> num);
 		
     vector <particle> particles;
+    ofMesh bgGraph;
+    int graphResolution = 360;
+    int div = 60;
     
     ofxPanel gui;
     ofParameter<float> temperture;

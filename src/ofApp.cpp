@@ -39,7 +39,7 @@ void ofApp::setup(){
     gui.setPosition(10, 10);
     gui.add(temperture.set("temperture", 10.0, 0.0, 40.0));
     gui.add(viscocity.set("viscocity", 1.0, 1.0, 5.0));
-    gui.add(timeInterval.set("timeInterval", 0, 0.0, 0.1));
+    gui.add(timeInterval.set("timeInterval", 0.1, 0.0, 0.1));
     
     int particleNum = 204;
     for (int i=0; i < particleNum; i++) {
@@ -60,6 +60,12 @@ void ofApp::setup(){
         }
     }
     
+    // graph setting
+    for (int i=0; i < graphResolution; i++) {
+        bgGraph.addVertex(ofVec3f(i*2, 480, 0));
+        bgGraph.addColor(ofColor(0, 150, 0, 100));
+    }
+    bgGraph.setMode(OF_PRIMITIVE_LINE_STRIP);
 }
 
 //--------------------------------------------------------------
@@ -69,6 +75,15 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    for (int i=0; i < ofGetWidth(); i+=div) {
+        ofSetColor(150, 100);
+        ofDrawLine(i, 0, i, ofGetHeight());
+    }
+    for (int i=0; i < ofGetHeight(); i+=div) {
+        ofSetColor(150, 100);
+        ofDrawLine(0, i, ofGetWidth(), i);
+    }
+    
     // joint
     for (int i=0; i<particles.size(); i++) {
         for (int j=i; j<particles.size(); j++) {
@@ -79,7 +94,7 @@ void ofApp::draw(){
             int j_num = particles[j].jointNum;
             if (i_num == 3 || j_num == 3) { continue; }
             
-            if (dist >= 1 && dist <= 35) {
+            if (dist >= 1 && dist <= 40) {
                 ofSetColor(39);
                 ofDrawLine(pos_i, pos_j);
                 particles[i].updateJointNum();
@@ -105,7 +120,7 @@ void ofApp::draw(){
                     dir_ji *= abs(60 - dist);
                     particles[i].addForce(dir_ji.x, dir_ji.y);
                     particles[j].addForce(-dir_ji.x, -dir_ji.y);
-                }else if (dist > 30 && dist <= 35) {
+                }else if (dist > 30 && dist <= 40) {
                     dir_ji *= abs(60 - dist);
                     particles[i].addForce(-dir_ji.x, -dir_ji.y);
                     particles[j].addForce(dir_ji.x, dir_ji.y);
@@ -145,12 +160,25 @@ void ofApp::draw(){
     dispersion = getDispersion(dists);
     
     gui.draw();
+    //if (ofGetFrameNum()%5 == 0) {
+        for (int i=0; i < bgGraph.getVertices().size(); i++) {
+            if (i < bgGraph.getVertices().size()-1) {
+                bgGraph.setVertex(i, ofVec3f(i*2, bgGraph.getVertex(i+1).y, 0));
+            } else {
+                bgGraph.setVertex(i, ofVec3f(i*2, 360-(dispersion-6200)/10, 0));
+            }
+        }
+    //}
+    bgGraph.draw();
     
     // debug: display now frame per second
     ofSetColor(39);
     ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 10, 100);
     ofDrawBitmapString("gravity point: (" + ofToString(gravityPoint.x) + ", " + ofToString(gravityPoint.y) + ")", 10, 110);
     ofDrawBitmapString("dispersion: " + ofToString(dispersion), 10, 120);
+    for (int i=0; i < ofGetHeight(); i+=div) {
+        ofDrawBitmapString(ofToString((i-360)*10+6200), ofGetWidth()-40, ofGetHeight()-i);
+    }
 }
 
 //--------------------------------------------------------------
@@ -166,6 +194,9 @@ void ofApp::keyPressed(int key){
             for (int j=0; j<17; j++) {
                 particles[102+j+i*17].pos = ofVec2f(150+j*26, 180+(j%2)*15+90*i);
             }
+        }
+        for (int i=0; i < graphResolution; i++) {
+            bgGraph.setVertex(i, ofVec3f(i*2, 480, 0));
         }
     }
 }
