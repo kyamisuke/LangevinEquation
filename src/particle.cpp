@@ -52,11 +52,11 @@ void particle::update(float temperture, float viscocity, float timeInterval){
 	
 	if (bFixed == false){
         pos.x = pos.x + frc.x*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., 1.);
-        if (pos.x > ofGetWidth()) { pos.x = 0; }
-        else if (pos.x < 0) { pos.x = ofGetWidth(); }
+        if (pos.x > ofGetWidth()) { pos.x -= ofGetWidth(); }
+        else if (pos.x < 0) { pos.x += ofGetWidth(); }
         pos.y = pos.y + frc.y*timeInterval/viscocity + pow(temperture*timeInterval/viscocity, 0.5)*normRandom(0., 1.);
-        if (pos.y > ofGetHeight()) { pos.y = 0; }
-        else if (pos.y < 0) { pos.y = ofGetHeight(); }
+        if (pos.y > ofGetHeight()) { pos.y -= ofGetHeight(); }
+        else if (pos.y < 0) { pos.y += ofGetHeight(); }
 	}
 }
 //------------------------------------------------------------
