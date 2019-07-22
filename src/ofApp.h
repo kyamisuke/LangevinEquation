@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "particle.h"
 #include "ofxGui.h"
+#include "baseStage.h"
 
 class ofApp : public ofBaseApp{
 
@@ -32,8 +33,15 @@ class ofApp : public ofBaseApp{
     int graphResolution = 360;
     int div = 60;
     
+    vector <baseStage> stages;
+    
     ofxPanel gui;
-    ofParameter<float> temperture;
+    ofParameter<float> topTmperture;
+    ofParameter<float> bottomTemperture;
     ofParameter<float> timeInterval;
     ofParameter<float> viscocity;
+    ofParameter<float> stringConstant;
+    ofParameter<float> repulsiveConstant;
+    
+    int naturalLength;
 };

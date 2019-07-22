@@ -37,11 +37,22 @@ void ofApp::setup(){
     // parameter
     gui.setup();
     gui.setPosition(10, 10);
-    gui.add(temperture.set("temperture", 10.0, 0.0, 40.0));
+    gui.add(topTmperture.set("topTemperture", 5.0, 0.0, 20.0));
+    gui.add(bottomTemperture.set("bottomTemperture", 5.0, 0.0, 20.0));
     gui.add(viscocity.set("viscocity", 1.0, 1.0, 5.0));
     gui.add(timeInterval.set("timeInterval", 0.1, 0.0, 0.1));
+    gui.add(stringConstant.set("stringConstant", 0.1, 0.0, 3.0));
+    gui.add(repulsiveConstant.set("repulsiveConstant", 0.1, 0.0, 3.0));
+    
+    baseStage topStage;
+    baseStage bottomStage;
+    topStage.setup(topTmperture, ofVec2f(0, 0), ofGetWidth(), ofGetHeight()/2);
+    bottomStage.setup(bottomTemperture, ofVec2f(0, ofGetHeight()/2), ofGetWidth(), ofGetHeight()/2);
+    stages.push_back(topStage);
+    stages.push_back(bottomStage);
     
     int particleNum = 204;
+    naturalLength = 30;
     for (int i=0; i < particleNum; i++) {
         particle p = particle();
         particles.push_back(p);
@@ -50,13 +61,13 @@ void ofApp::setup(){
     // initial condition
     for (int i=0; i<6; i++) {
         for (int j=0; j<17; j++) {
-            particles[j+i*17].pos = ofVec2f(150+j*26, 150-(j%2)*15+90*i);
+            particles[j+i*17].pos = ofVec2f(150+j*naturalLength*pow(0.75, 0.5), 90-(j%2)*naturalLength/2.+naturalLength*3.*i);
         }
     }
     
     for (int i=0; i<6; i++) {
         for (int j=0; j<17; j++) {
-            particles[102+j+i*17].pos = ofVec2f(150+j*26, 180+(j%2)*15+90*i);
+            particles[102+j+i*17].pos = ofVec2f(150+j*naturalLength*pow(0.75, 0.5), 90+naturalLength+(j%2)*naturalLength/2.+naturalLength*3.*i);
         }
     }
     
@@ -70,11 +81,16 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+    stages[0].update(topTmperture);
+    stages[1].update(bottomTemperture);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    for (int i=0; i < stages.size(); i++) {
+        stages[i].draw(stages[i].getTemperture());
+    }
+    
     for (int i=0; i < ofGetWidth(); i+=div) {
         ofSetColor(150, 100);
         ofDrawLine(i, 0, i, ofGetHeight());
@@ -94,7 +110,7 @@ void ofApp::draw(){
             int j_num = particles[j].jointNum;
             if (i_num == 3 || j_num == 3) { continue; }
             
-            if (dist >= 1 && dist <= 40) {
+            if (dist >= 1 && dist <= naturalLength+10) {
                 ofSetColor(39);
                 ofDrawLine(pos_i, pos_j);
                 particles[i].updateJointNum();
@@ -116,31 +132,55 @@ void ofApp::draw(){
             
             if (particles[i].jointPos[0] == j || particles[i].jointPos[1] == j
                 || particles[i].jointPos[2] == j) {
-                if (dist >= 1 && dist <= 30) {
-                    dir_ji *= abs(60 - dist);
-                    particles[i].addForce(dir_ji.x, dir_ji.y);
-                    particles[j].addForce(-dir_ji.x, -dir_ji.y);
-                }else if (dist > 30 && dist <= 40) {
-                    dir_ji *= abs(60 - dist);
-                    particles[i].addForce(-dir_ji.x, -dir_ji.y);
-                    particles[j].addForce(dir_ji.x, dir_ji.y);
+                if (dist >= 1 && dist <= naturalLength) {
+                    dir_ji *= abs(naturalLength - dist);
+                    particles[i].addForce(dir_ji.x, dir_ji.y, stringConstant);
+                    particles[j].addForce(-dir_ji.x, -dir_ji.y, stringConstant);
+                }else if (dist > naturalLength && dist <= naturalLength+10) {
+                    dir_ji *= abs(naturalLength - dist);
+                    particles[i].addForce(-dir_ji.x, -dir_ji.y, stringConstant);
+                    particles[j].addForce(dir_ji.x, dir_ji.y, stringConstant);
                 }
             } else {
-                if (dist >= 1 && dist <= 30) {
-                    dir_ji *= abs(60 - dist);
-                    particles[i].addForce(dir_ji.x, dir_ji.y);
-                    particles[j].addForce(-dir_ji.x, -dir_ji.y);
+                if (dist >= 1 && dist <= naturalLength) {
+                    dir_ji *= abs(naturalLength - dist);
+                    particles[i].addRepulsiveForce(dir_ji.x, dir_ji.y, repulsiveConstant);
+                    particles[j].addRepulsiveForce(-dir_ji.x, -dir_ji.y, repulsiveConstant);
                 }
             }
             
         }
-        particles[i].update(temperture, viscocity, timeInterval);
+        // get each stage temperture
+        for (int k=0; k < stages.size(); k++) {
+            ofVec2f pPos = particles[i].pos;
+            ofVec2f sPos = stages[k].getPosition();
+            float width = stages[k].getWidth();
+            float height = stages[k].getHeight();
+            if ((sPos.x <= pPos.x && pPos.x <= sPos.x+width) &&
+                (sPos.y <= pPos.y && pPos.y <= sPos.y+height))
+            {
+                particles[i].update(stages[k].getTemperture(), viscocity, timeInterval);
+            }
+        }
     }
     
     // draw particle
     for (int i=0; i<particles.size(); i++) {
         int num = particles[i].jointNum;
-        ofSetColor(num*80, 50, 240-num*80);
+        switch(num) {
+            case 0:
+                ofSetColor(0);
+                break;
+            case 1:
+                ofSetColor(0, 255, 0);
+                break;
+            case 2:
+                ofSetColor(255, 255, 0);
+                break;
+            case 3:
+                ofSetColor(255, 0, 0);
+                break;
+        }
         particles[i].draw();
         particles[i].resetJointNum();
         particles[i].resetForce();
@@ -160,7 +200,7 @@ void ofApp::draw(){
     dispersion = getDispersion(dists);
     
     gui.draw();
-    //if (ofGetFrameNum()%5 == 0) {
+    if (ofGetFrameNum()%10 == 0) {
         for (int i=0; i < bgGraph.getVertices().size(); i++) {
             if (i < bgGraph.getVertices().size()-1) {
                 bgGraph.setVertex(i, ofVec3f(i*2, bgGraph.getVertex(i+1).y, 0));
@@ -168,14 +208,14 @@ void ofApp::draw(){
                 bgGraph.setVertex(i, ofVec3f(i*2, 360-(dispersion-6200)/10, 0));
             }
         }
-    //}
+    }
     bgGraph.draw();
     
     // debug: display now frame per second
     ofSetColor(39);
-    ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 10, 100);
-    ofDrawBitmapString("gravity point: (" + ofToString(gravityPoint.x) + ", " + ofToString(gravityPoint.y) + ")", 10, 110);
-    ofDrawBitmapString("dispersion: " + ofToString(dispersion), 10, 120);
+    ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 10, gui.getHeight()+30);
+    ofDrawBitmapString("gravity point: (" + ofToString(gravityPoint.x) + ", " + ofToString(gravityPoint.y) + ")", 10, gui.getHeight()+40);
+    ofDrawBitmapString("dispersion: " + ofToString(dispersion), 10, gui.getHeight()+50);
     for (int i=0; i < ofGetHeight(); i+=div) {
         ofDrawBitmapString(ofToString((i-360)*10+6200), ofGetWidth()-40, ofGetHeight()-i);
     }

@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
 <group>
 	<temperture>0.41</temperture>
+	<viscocity>1</viscocity>
+	<timeInterval>0.1</timeInterval>
+	<stringConstant>0.115</stringConstant>
+	<topTemperture>4.9</topTemperture>
+	<bottomTemperture>5</bottomTemperture>
 </group>

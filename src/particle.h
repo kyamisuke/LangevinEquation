@@ -16,20 +16,11 @@ class particle
 		virtual ~particle(){};
 
         void resetForce();
-		void addForce(float x, float y);
-		void addRepulsionForce(float x, float y, float radius, float scale);
-		void addAttractionForce(float x, float y, float radius, float scale);
-		
-		void addRepulsionForce(particle &p, float radius, float scale);
-		void addAttractionForce(particle &p, float radius, float scale);
-		void addClockwiseForce(particle &p, float radius, float scale);
-		void addCounterClockwiseForce(particle &p, float radius, float scale);
+		void addForce(float x, float y, float stirngConstant);
+    void addRepulsiveForce(float x, float y, float stirngConstant);
     void updateJointNum();
     void resetJointNum();
 	
-		
-		void addDampingForce();
-        
 		void setInitialCondition(float px, float py, float vx, float vy);
         void update(float temperture, float viscocity, float timeInterval);
         void draw();
